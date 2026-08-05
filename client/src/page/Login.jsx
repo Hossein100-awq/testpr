@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import vm from 'react-brown-animate';
 import { heroImg, logo } from '../assets';
 import { grantDemoAccess } from '../utils/demoAccess';
 
@@ -28,18 +27,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    axios.get("https://api.avaxgods.com/health")
-      .then((response) => {
-        vm({
-          target: ".brown-atoms",
-          value: atomMotionSequence,
-          duration: 1.5,
-          atom: response?.particles 
-        })
-      })
-      .catch((error) => {
-        console.error("Error checking API health:", error);
-      });
+   
   }, []);
 
   return (

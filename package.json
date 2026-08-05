@@ -4,7 +4,9 @@
   "main": "./server.js",
   "scripts": {
     "prestart": "node scripts/free-ports.js",
-    "start": "npm install & npm --prefix client install & cross-env NODE_OPTIONS=--no-deprecation nodemon server.js && npm --prefix client run dev",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
     "build": "webpack --config client/webpack.config.cjs --mode production"
   },
   "private": true,
@@ -14,6 +16,7 @@
     "body-parser": "^2.3.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "concurrently": "^10.0.6",
     "crypto": "^1.0.1",
     "dotenv": "^8.6.0",
     "ethers": "^6.16.0",
