@@ -3,24 +3,40 @@ import { useNavigate } from 'react-router-dom';
 import { CustomButton, CustomInput, PageHOC } from '../components';
 import { useGlobalContext } from '../context';
 import { characters } from '../assets';
+import WalletConnect from '../components/WalletConnect';
 
 const Home = () => {
   const { gameData, registerPlayer, setShowAlert } = useGlobalContext();
-  const [playerName, setPlayerName] = useState(gameData.player?.playerName || '');
-  const [characterId, setCharacterId] = useState(gameData.player?.characterId || characters[0].id);
+
+  const [playerName, setPlayerName] = useState(
+    gameData.player?.playerName || ''
+  );
+
+  const [characterId, setCharacterId] = useState(
+    gameData.player?.characterId || characters[0].id
+  );
+
   const navigate = useNavigate();
 
   const handleClick = async () => {
     if (!registerPlayer(playerName, characterId)) {
-      setShowAlert({ status: true, type: 'failure', message: 'Enter a name to join the arena.' });
+      setShowAlert({
+        status: true,
+        type: 'failure',
+        message: 'Enter a name to join the arena.',
+      });
+
       return;
     }
 
     setShowAlert({
       status: true,
       type: 'info',
-      message: gameData.player ? 'Your player profile has been updated.' : `${playerName.trim()} is ready for battle.`,
+      message: gameData.player
+        ? 'Your player profile has been updated.'
+        : `${playerName.trim()} is ready for battle.`,
     });
+
     navigate('/create-battle');
   };
 
@@ -28,10 +44,16 @@ const Home = () => {
     if (gameData.activeBattle?.battleStatus === 1) {
       navigate(`/battle/${gameData.activeBattle.name}`);
     }
-  }, [gameData]);
+  }, [gameData, navigate]);
 
   return (
     <div className="flex flex-col">
+      {/* Wallet connection */}
+      <div className="mb-6 flex justify-end">
+        <WalletConnect />
+      </div>
+
+      {/* Player name */}
       <CustomInput
         label="Name"
         placeHolder="Enter your player name"
@@ -39,10 +61,12 @@ const Home = () => {
         handleValueChange={setPlayerName}
       />
 
+      {/* Character selection */}
       <fieldset className="mt-5">
         <legend className="mb-3 font-rajdhani text-lg font-semibold text-white">
           Choose your character
         </legend>
+
         <div className="character-grid">
           {characters.map((character) => (
             <button
@@ -53,18 +77,31 @@ const Home = () => {
               onClick={() => setCharacterId(character.id)}
               className="character-option"
             >
-              <img src={character.image} alt="" className="h-full w-full object-cover" />
+              <img
+                src={character.image}
+                alt=""
+                className="h-full w-full object-cover"
+              />
+
               <span className="character-option-name">
                 {character.name}
               </span>
             </button>
           ))}
         </div>
-        <p className="mt-2 font-rajdhani text-sm text-white/70" aria-live="polite">
-          Selected: {characters.find((character) => character.id === characterId)?.name}
+
+        <p
+          className="mt-2 font-rajdhani text-sm text-white/70"
+          aria-live="polite"
+        >
+          Selected:{' '}
+          {characters.find(
+            (character) => character.id === characterId
+          )?.name}
         </p>
       </fieldset>
 
+      {/* Enter arena */}
       <CustomButton
         title={gameData.player ? 'Save player profile' : 'Enter the arena'}
         handleClick={handleClick}
